@@ -1,0 +1,285 @@
+### ============================================================
+###   GabbyTech Academy API — REST Client Test File
+###   Use with the REST Client extension in VS Code
+###   Server: http://localhost:8000
+### ============================================================
+
+
+### ── DASHBOARD ──────────────────────────────────────────────
+
+### Get school summary dashboard
+GET http://localhost:8000/dashboard
+
+
+###
+
+
+### ── STUDENTS: GET ───────────────────────────────────────────
+
+### Get all students
+GET http://localhost:8000/students
+
+###
+
+### Get all students in a specific grade (JSS1 JSS2 JSS3 SS1 SS2 SS3)
+GET http://localhost:8000/students/grade/SS2
+
+###
+
+### Get a single student by MongoDB ID  ← replace after you POST one
+GET http://localhost:8000/students/REPLACE_WITH_REAL_ID
+
+
+###
+
+
+### ── STUDENTS: POST ──────────────────────────────────────────
+
+### Create student 1
+POST http://localhost:8000/students
+Content-Type: application/json
+
+{
+  "firstName": "Chukwuemeka",
+  "lastName": "Okafor",
+  "middleName": "David",
+  "gender": "Male",
+  "dateOfBirth": "2008-03-14",
+  "nationality": "Nigerian",
+  "stateOfOrigin": "Anambra",
+  "religion": "Christianity",
+  "studentId": "GTA-2024-0001",
+  "grade": "SS2",
+  "arm": "A",
+  "enrollmentDate": "2022-09-05",
+  "status": "Active",
+  "cumulativeGPA": 4.2,
+  "waecSubjects": ["Mathematics", "English Language", "Physics", "Chemistry", "Biology"],
+  "email": "emeka.okafor@gabbytech.edu.ng",
+  "phoneNumber": "+2348012345678",
+  "address": {
+    "street": "12 Adeola Odeku Street",
+    "city": "Lagos",
+    "state": "Lagos"
+  },
+  "emergencyContact": {
+    "fullName": "Ngozi Okafor",
+    "relationship": "Mother",
+    "phoneNumber": "+2348098765432",
+    "email": "ngozi.okafor@gmail.com"
+  },
+  "medical": {
+    "bloodGroup": "O+",
+    "genotype": "AS",
+    "allergies": ["Penicillin"],
+    "disabilities": "None",
+    "medicalNotes": "Mild asthma"
+  }
+}
+
+###
+
+### Create student 2
+POST http://localhost:8000/students
+Content-Type: application/json
+
+{
+  "firstName": "Amina",
+  "lastName": "Bello",
+  "gender": "Female",
+  "dateOfBirth": "2010-07-22",
+  "nationality": "Nigerian",
+  "stateOfOrigin": "Kano",
+  "religion": "Islam",
+  "studentId": "GTA-2024-0002",
+  "grade": "JSS3",
+  "arm": "B",
+  "status": "Active",
+  "email": "amina.bello@gabbytech.edu.ng",
+  "phoneNumber": "+2348023456789",
+  "address": {
+    "street": "5 Independence Way",
+    "city": "Kano",
+    "state": "Kano"
+  },
+  "emergencyContact": {
+    "fullName": "Ibrahim Bello",
+    "relationship": "Father",
+    "phoneNumber": "+2348034567890"
+  },
+  "medical": {
+    "bloodGroup": "A+",
+    "genotype": "AA"
+  }
+}
+
+###
+
+### TEST: Validation error — missing required fields — expect 400
+POST http://localhost:8000/students
+Content-Type: application/json
+
+{
+  "firstName": "TestOnly"
+}
+
+
+###
+
+
+### ── STUDENTS: PUT ───────────────────────────────────────────
+
+### Update a student — replace REPLACE_WITH_REAL_ID
+PUT http://localhost:8000/students/REPLACE_WITH_REAL_ID
+Content-Type: application/json
+
+{
+  "grade": "SS3",
+  "arm": "B",
+  "status": "Active",
+  "cumulativeGPA": 4.5
+}
+
+###
+
+### TEST: Invalid grade value — expect 400
+PUT http://localhost:8000/students/REPLACE_WITH_REAL_ID
+Content-Type: application/json
+
+{
+  "grade": "FORM5"
+}
+
+
+###
+
+
+### ── STUDENTS: DELETE ────────────────────────────────────────
+
+### Delete a student — replace REPLACE_WITH_REAL_ID
+DELETE http://localhost:8000/students/REPLACE_WITH_REAL_ID
+
+###
+
+### TEST: Invalid ID format — expect 400
+DELETE http://localhost:8000/students/not-a-valid-id
+
+
+###
+### ============================================================
+### ── COURSES ──────────────────────────────────────────────────
+### ============================================================
+
+### Get all courses
+GET http://localhost:8000/courses
+
+###
+
+### Get a single course by MongoDB ID
+GET http://localhost:8000/courses/REPLACE_WITH_REAL_ID
+
+
+###
+
+
+### ── COURSES: POST ───────────────────────────────────────────
+
+### Create course 1
+POST http://localhost:8000/courses
+Content-Type: application/json
+
+{
+  "courseCode": "MTH301",
+  "courseName": "Further Mathematics",
+  "courseShortName": "FURTHMATHS",
+  "department": "Sciences",
+  "subjectCategory": "WAEC",
+  "gradeLevel": "SS3",
+  "term": "Full Year",
+  "teacherName": "Mr. Adewale Ogundimu",
+  "teacherEmail": "a.ogundimu@gabbytech.edu.ng",
+  "hoursPerWeek": 5,
+  "maxEnrollment": 40,
+  "creditUnits": 4,
+  "passMark": 40,
+  "isWAECSubject": true,
+  "isActive": true,
+  "description": "Advanced mathematics for SS3 science students preparing for WAEC. Covers calculus, vectors, and statistics.",
+  "syllabusSummary": "Term 1: Calculus. Term 2: Vectors. Term 3: Statistics.",
+  "textbooks": ["New Further Mathematics by Tuttuh Adegun", "Longman Further Mathematics"]
+}
+
+###
+
+### Create course 2
+POST http://localhost:8000/courses
+Content-Type: application/json
+
+{
+  "courseCode": "ENG101",
+  "courseName": "English Language",
+  "department": "Languages",
+  "subjectCategory": "Compulsory",
+  "gradeLevel": "All",
+  "term": "Full Year",
+  "teacherName": "Mrs. Funke Adeyemi",
+  "teacherEmail": "f.adeyemi@gabbytech.edu.ng",
+  "hoursPerWeek": 6,
+  "maxEnrollment": 45,
+  "creditUnits": 3,
+  "passMark": 50,
+  "isWAECSubject": true,
+  "isActive": true,
+  "description": "Core English language skills covering comprehension, essay writing, grammar and oral English for all classes."
+}
+
+###
+
+### TEST: Duplicate courseCode — expect 400
+POST http://localhost:8000/courses
+Content-Type: application/json
+
+{
+  "courseCode": "MTH301",
+  "courseName": "Duplicate Test",
+  "department": "Sciences",
+  "subjectCategory": "Core",
+  "gradeLevel": "SS1",
+  "term": "First Term",
+  "teacherName": "Someone",
+  "hoursPerWeek": 3,
+  "maxEnrollment": 30,
+  "creditUnits": 2,
+  "description": "This should fail because MTH301 already exists."
+}
+
+
+###
+
+
+### ── COURSES: PUT ────────────────────────────────────────────
+
+### Update a course — replace REPLACE_WITH_REAL_ID
+PUT http://localhost:8000/courses/REPLACE_WITH_REAL_ID
+Content-Type: application/json
+
+{
+  "teacherName": "Dr. Emeka Eze",
+  "hoursPerWeek": 6,
+  "isActive": true,
+  "description": "Updated: Advanced mathematics for SS3 science students. Now includes probability."
+}
+
+
+###
+
+
+### ── COURSES: DELETE ─────────────────────────────────────────
+
+### Delete a course — replace REPLACE_WITH_REAL_ID
+DELETE http://localhost:8000/courses/REPLACE_WITH_REAL_ID
+
+###
+
+### TEST: Invalid ID format — expect 400
+DELETE http://localhost:8000/courses/not-a-valid-id

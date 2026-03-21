@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GabbyTech Academy — School Management System</title>
+  <meta name="description" content="GabbyTech Academy School Management System — A RESTful API for managing secondary school students and courses in the Nigerian educational system." />
+  <meta name="author" content="GabbyTech — BYU-Idaho" />
+  <meta property="og:title" content="GabbyTech Academy — School Management API" />
+  <meta property="og:description" content="Modern school management system built with Node.js, Express, and Mongoose." />
+  <meta name="theme-color" content="#c9a84c" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- External Stylesheet -->
+  <link rel="stylesheet" href="./styles/style.css" />
+</head>
+<body>
+
+  <!-- ── TOPBAR ─────────────────────────────────── -->
+  <nav class="topbar">
+    <a href="/" class="topbar-brand">
+      <div class="topbar-crest">🏫</div>
+      <div class="topbar-name">
+        GabbyTech Academy
+        <small>School Management System</small>
+      </div>
+    </a>
+    <div class="topbar-nav">
+      <a href="/students">Students</a>
+      <a href="/courses">Courses</a>
+      <a href="/dashboard">Dashboard</a>
+      <a href="/api-docs" class="active">API Docs</a>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle light/dark mode">
+        <span class="theme-icon" id="themeIcon">☀️</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── HERO ───────────────────────────────────── -->
+  <header class="hero">
+    <div class="hero-badge">★ CSE 341 · BYU-Idaho · W03 Project</div>
+    <h1>
+      GabbyTech Academy
+      <span>School Management API</span>
+    </h1>
+    <p class="hero-subtitle">
+      A production-grade RESTful API for managing <strong>students and courses</strong>
+      in a Nigerian secondary school — built with <strong>Node.js</strong>,
+      <strong>Express</strong>, and <strong>Mongoose</strong>.
+    </p>
+    <div class="hero-buttons">
+      <a href="/api-docs" class="btn btn-gold">📚 Explore API Docs</a>
+      <a href="/dashboard" class="btn btn-outline">📊 View Dashboard</a>
+    </div>
+  </header>
+
+  <!-- ── STATS BAR ──────────────────────────────── -->
+  <div class="stats-bar">
+    <div class="stat-item">
+      <div class="stat-number">2</div>
+      <div class="stat-label">Collections</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">11</div>
+      <div class="stat-label">API Endpoints</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">25+</div>
+      <div class="stat-label">Schema Fields</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">JSS–SS3</div>
+      <div class="stat-label">Nigerian System</div>
+    </div>
+  </div>
+
+  <!-- ── MAIN ───────────────────────────────────── -->
+  <main class="main">
+
+    <!-- Features -->
+    <section>
+      <div class="section-header">
+        <p class="section-label">Architecture</p>
+        <h2 class="section-title">What Powers This System</h2>
+      </div>
+      <div class="cards-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🍃</div>
+          <h3>Mongoose ODM</h3>
+          <p>Schema-enforced data models with built-in validation, virtuals, and type casting on top of MongoDB Atlas.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🛡️</div>
+          <h3>Data Validation</h3>
+          <p>Every field validated at the schema level. Nigerian-specific enums: JSS1–SS3, blood groups, genotypes, WAEC subjects.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <h3>Error Handling</h3>
+          <p>Try/catch on every route. Meaningful 400/404/500 responses with detailed error messages and field-level feedback.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <h3>Dashboard Stats</h3>
+          <p>Live summary endpoint: total students, active enrolments, courses by department, recent registrations.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔐</div>
+          <h3>Env Secured</h3>
+          <p>MongoDB credentials stored in environment variables. Never committed to GitHub. Render config vars used in production.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📖</div>
+          <h3>Swagger Docs</h3>
+          <p>Full interactive API documentation — test every endpoint directly from the browser without any extra tools.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Endpoints -->
+    <section>
+      <div class="section-header">
+        <p class="section-label">REST API</p>
+        <h2 class="section-title">All Endpoints</h2>
+      </div>
+      <div class="endpoints-block">
+        <div class="endpoint-row">
+          <span class="method-badge method-get">GET</span>
+          <span class="endpoint-path">/dashboard</span>
+          <span class="endpoint-desc">School overview — totals, breakdowns, recent records</span>
+        </div>
+        <div class="endpoint-row">
+          <span class="method-badge method-get">GET</span>
+          <span class="endpoint-path">/students</span>
+          <span class="endpoint-desc">Retrieve all registered students</span>
+        </div>
+        <div class="endpoint-row">
+          <span class="method-badge method-get">GET</span>
+          <span class="endpoint-path">/students/:id</span>
+          <span class="endpoint-desc">Get a single student by MongoDB ID</span>
+        </div>
+        <div class="endpoint-row">
+          <span class="method-badge method-get">GET</span>
+          <span class="endpoint-path">/students/grade/:grade</span>
+          <span class="endpoint-desc">Filter students by class (e.g. SS2, JSS1)</span>
+        </div>
+        <div class="endpoint-row">
+          <span class="method-badge method-post">POST</span>
+          <span class="endpoint-path">/students</span>
+          <span class="endpoint-desc">Register a new student with full validation</span>
+        </div>
+        <div class="endpoint-row">
+          <span class="method-badge method-put">PUT</span>
+          <span class="endpoint-path">/students/:id</span>
+          <span class="endpoint-desc">Update an existing student record</span>
+        </div>
+        <div class="endpoint-row">
+          <span class="method-badge method-delete">DELETE</span>
+          <span class="endpoint-path">/students/:id</span>
+          <span class="endpoint-desc">Remove a student from the system</span>
+        </div>
+        <div class="endpoint-row">
+          <span class="method-badge method-get">GET</span>
+          <span class="endpoint-path">/courses</span>
+          <span class="endpoint-desc">Retrieve all courses/subjects</span>
+        </div>
+        <div class="endpoint-row">
+          <span class="method-badge method-get">GET</span>
+          <span class="endpoint-path">/courses/:id</span>
+          <span class="endpoint-desc">Get a single course by MongoDB ID</span>
+        </div>
+        <div class="endpoint-row">
+          <span class="method-badge method-post">POST</span>
+          <span class="endpoint-path">/courses</span>
+          <span class="endpoint-desc">Create a new course with full validation</span>
+        </div>
+        <div class="endpoint-row">
+          <span class="method-badge method-put">PUT</span>
+          <span class="endpoint-path">/courses/:id</span>
+          <span class="endpoint-desc">Update an existing course</span>
+        </div>
+        <div class="endpoint-row">
+          <span class="method-badge method-delete">DELETE</span>
+          <span class="endpoint-path">/courses/:id</span>
+          <span class="endpoint-desc">Remove a course from the system</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Schema Preview -->
+    <section>
+      <div class="section-header">
+        <p class="section-label">Data Models</p>
+        <h2 class="section-title">Mongoose Schemas</h2>
+      </div>
+      <div class="schema-grid">
+        <div class="schema-card">
+          <div class="schema-card-title">
+            Student <span class="schema-count">25+ fields</span>
+          </div>
+          <p class="schema-card-sub">models/Student.js · Nigerian secondary school student record</p>
+          <div class="field-list">
+            <div class="field-item"><span class="field-name">firstName / lastName</span><span class="field-type">String</span><span class="field-req">required</span></div>
+            <div class="field-item"><span class="field-name">studentId</span><span class="field-type">String · unique</span><span class="field-req">required</span></div>
+            <div class="field-item"><span class="field-name">grade</span><span class="field-type">JSS1–SS3 enum</span><span class="field-req">required</span></div>
+            <div class="field-item"><span class="field-name">arm</span><span class="field-type">A–E enum</span><span class="field-req">required</span></div>
+            <div class="field-item"><span class="field-name">gender / dateOfBirth</span><span class="field-type">String / Date</span><span class="field-req">required</span></div>
+            <div class="field-item"><span class="field-name">medical.bloodGroup</span><span class="field-type">A+/B+/O+… enum</span><span class="field-req">required</span></div>
+            <div class="field-item"><span class="field-name">medical.genotype</span><span class="field-type">AA/AS/SS… enum</span><span class="field-req">required</span></div>
+            <div class="field-item"><span class="field-name">emergencyContact</span><span class="field-type">Nested Object</span><span class="field-req">required</span></div>
+            <div class="field-item"><span class="field-name">cumulativeGPA</span><span class="field-type">Number 0–5.0</span></div>
+            <div class="field-item"><span class="field-name">profilePhotoUrl</span><span class="field-type">String · URL</span></div>
+          </div>
+        </div>
+        <div class="schema-card">
+          <div class="schema-card-title">
+            Course <span class="schema-count">17+ fields</span>
+          </div>
+          <p class="schema-card-sub">models/Course.js · Secondary school subject/course record</p>
+          <div class="field-list">
+            <div class="field-item"><span class="field-name">courseCode</span><span class="field-type">String · unique</span><span class="field-req">required</span></div>
+            <div class="field-item"><span class="field-name">courseName</span><span class="field-type">String</span><span class="field-req">required</span></div>
+            <div class="field-item"><span class="field-name">department</span><span class="field-type">Sciences/Arts… enum</span><span class="field-req">required</span></div>
+            <div class="field-item"><span class="field-name">subjectCategory</span><span class="field-type">Core/WAEC… enum</span><span class="field-req">required</span></div>
+            <div class="field-item"><span class="field-name">gradeLevel</span><span class="field-type">JSS1–SS3/All enum</span><span class="field-req">required</span></div>
+            <div class="field-item"><span class="field-name">teacherName / Email</span><span class="field-type">String</span><span class="field-req">required</span></div>
+            <div class="field-item"><span class="field-name">term</span><span class="field-type">First/Second… enum</span><span class="field-req">required</span></div>
+            <div class="field-item"><span class="field-name">creditUnits</span><span class="field-type">Number 1–6</span><span class="field-req">required</span></div>
+            <div class="field-item"><span class="field-name">passMark</span><span class="field-type">Number 0–100</span></div>
+            <div class="field-item"><span class="field-name">isWAECSubject</span><span class="field-type">Boolean</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section>
+      <div class="about-band">
+        <div class="about-crest">🎓</div>
+        <div class="about-text">
+          <p>
+            This project is part of <strong>CSE 341 Web Services</strong> at BYU-Idaho, built by <strong>GabbyTech</strong>.
+            It models a real Nigerian secondary school management system using the JSS1–SS3 / SS1–SS3 grading structure,
+            WAEC subject categories, and Nigerian-specific data fields like genotype and state of origin.
+            The API is designed to eventually connect with the <strong>Cinque Stelle CBT platform</strong>
+            and serve as a backend component of the broader GabbyTech portfolio of educational tools.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── FOOTER ─────────────────────────────────── -->
+  <footer class="footer">
+    <div class="footer-left">
+      Crafted with care by <span>GabbyTech</span> · BYU-Idaho Online · 2026
+    </div>
+    <div class="footer-links">
+      <a href="/api-docs">/api-docs</a>
+      <a href="/students">/students</a>
+      <a href="/courses">/courses</a>
+      <a href="/dashboard">/dashboard</a>
+    </div>
+  </footer>
+
+  <!-- ── BACK TO TOP ────────────────────────────── -->
+  <button class="back-to-top" id="backToTop" aria-label="Back to top" title="Back to top">↑</button>
+
+  <!-- ── SCRIPTS ───────────────────────────────── -->
+  <script>
+    // Theme Toggle
+    const html = document.documentElement;
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+
+    const savedTheme = localStorage.getItem('gabbytech-theme') || 'dark';
+    html.setAttribute('data-theme', savedTheme);
+    themeIcon.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
+    themeToggle.addEventListener('click', () => {
+      const current = html.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      themeIcon.textContent = next === 'dark' ? '☀️' : '🌙';
+      localStorage.setItem('gabbytech-theme', next);
+    });
+
+    // Back to Top
+    const backToTop = document.getElementById('backToTop');
+    window.addEventListener('scroll', () => {
+      backToTop.classList.toggle('visible', window.scrollY > 300);
+    });
+    backToTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  </script>
+
+</body>
+</html>
