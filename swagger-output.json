@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "GabbyTech Academy — School Management API",
-    "description": "\n      A RESTful API for managing students and courses at GabbyTech Academy \n      (Nigerian Secondary School System: JSS1–SS3).\n      \n      Built with Node.js, Express, and Mongoose as part of CSE 341 Web Services at BYU-Idaho.\n      \n      Developed by GabbyTech.\n    ",
+    "description": "A RESTful API for managing students and courses at GabbyTech Academy (Nigerian Secondary School System: JSS1–SS3). Built with Node.js, Express, and Mongoose as part of CSE 341 Web Services at BYU-Idaho. Developed by GabbyTech.",
     "version": "1.0.0",
     "contact": {
       "name": "GabbyTech",
@@ -12,393 +12,274 @@
   "host": "gabbytech-academy-api.onrender.com",
   "basePath": "/",
   "tags": [
-    {
-      "name": "Dashboard",
-      "description": "School summary statistics"
-    },
-    {
-      "name": "Students",
-      "description": "Student registration and management"
-    },
-    {
-      "name": "Courses",
-      "description": "Course/subject management"
-    }
+    { "name": "Dashboard", "description": "School summary statistics" },
+    { "name": "Students", "description": "Student registration and management" },
+    { "name": "Courses", "description": "Course/subject management" }
   ],
-  "schemes": [
-    "https"
-  ],
+  "schemes": ["https"],
   "paths": {
     "/dashboard": {
       "get": {
-        "description": "",
+        "tags": ["Dashboard"],
+        "summary": "Get school dashboard summary",
+        "description": "Returns total students, courses, breakdowns by grade and department, and recent records.",
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "OK" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     },
     "/students/": {
       "get": {
-        "description": "",
+        "tags": ["Students"],
+        "summary": "Get all students",
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "OK" },
+          "500": { "description": "Internal Server Error" }
         }
       },
       "post": {
-        "description": "",
-        "responses": {
-          "201": {
-            "description": "Created"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
+        "tags": ["Students"],
+        "summary": "Register a new student",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "firstName":     { "type": "string",  "example": "Chukwuemeka" },
+                "lastName":      { "type": "string",  "example": "Okafor" },
+                "middleName":    { "type": "string",  "example": "David" },
+                "gender":        { "type": "string",  "example": "Male" },
+                "dateOfBirth":   { "type": "string",  "example": "2008-03-14" },
+                "nationality":   { "type": "string",  "example": "Nigerian" },
+                "stateOfOrigin": { "type": "string",  "example": "Anambra" },
+                "religion":      { "type": "string",  "example": "Christianity" },
+                "studentId":     { "type": "string",  "example": "GTA-2024-0001" },
+                "grade":         { "type": "string",  "example": "SS2" },
+                "arm":           { "type": "string",  "example": "A" },
+                "status":        { "type": "string",  "example": "Active" },
+                "cumulativeGPA": { "type": "number",  "example": 4.2 },
+                "waecSubjects":  { "type": "array", "items": { "type": "string" }, "example": ["Mathematics", "English Language", "Physics"] },
+                "email":         { "type": "string",  "example": "emeka.okafor@gabbytech.edu.ng" },
+                "phoneNumber":   { "type": "string",  "example": "+2348012345678" },
+                "address": {
+                  "type": "object",
+                  "example": {
+                    "street": "12 Adeola Odeku Street",
+                    "city": "Lagos",
+                    "state": "Lagos"
+                  }
+                },
+                "emergencyContact": {
+                  "type": "object",
+                  "example": {
+                    "fullName": "Ngozi Okafor",
+                    "relationship": "Mother",
+                    "phoneNumber": "+2348098765432",
+                    "email": "ngozi.okafor@gmail.com"
+                  }
+                },
+                "medical": {
+                  "type": "object",
+                  "example": {
+                    "bloodGroup": "O+",
+                    "genotype": "AS",
+                    "allergies": ["Penicillin"],
+                    "disabilities": "None",
+                    "medicalNotes": "Mild asthma"
+                  }
+                }
+              }
+            }
           }
+        ],
+        "responses": {
+          "201": { "description": "Created" },
+          "400": { "description": "Bad Request" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     },
     "/students/grade/{grade}": {
       "get": {
-        "description": "",
+        "tags": ["Students"],
+        "summary": "Get students by grade",
         "parameters": [
           {
             "name": "grade",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "enum": ["JSS1", "JSS2", "JSS3", "SS1", "SS2", "SS3"],
+            "description": "Class grade to filter by"
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "OK" },
+          "400": { "description": "Bad Request" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     },
     "/students/{id}": {
       "get": {
-        "description": "",
+        "tags": ["Students"],
+        "summary": "Get a single student by ID",
         "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
+          { "name": "id", "in": "path", "required": true, "type": "string", "description": "MongoDB ObjectId" }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "OK" },
+          "400": { "description": "Bad Request" },
+          "404": { "description": "Not Found" },
+          "500": { "description": "Internal Server Error" }
         }
       },
       "put": {
-        "description": "",
+        "tags": ["Students"],
+        "summary": "Update a student record",
         "parameters": [
+          { "name": "id", "in": "path", "required": true, "type": "string", "description": "MongoDB ObjectId" },
           {
-            "name": "id",
-            "in": "path",
+            "name": "body",
+            "in": "body",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "object",
+              "properties": {
+                "grade":         { "type": "string", "example": "SS3" },
+                "arm":           { "type": "string", "example": "B" },
+                "status":        { "type": "string", "example": "Active" },
+                "cumulativeGPA": { "type": "number", "example": 4.5 }
+              }
+            }
           }
         ],
         "responses": {
-          "204": {
-            "description": "No Content"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "204": { "description": "No Content" },
+          "400": { "description": "Bad Request" },
+          "404": { "description": "Not Found" },
+          "500": { "description": "Internal Server Error" }
         }
       },
       "delete": {
-        "description": "",
+        "tags": ["Students"],
+        "summary": "Delete a student record",
         "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
+          { "name": "id", "in": "path", "required": true, "type": "string", "description": "MongoDB ObjectId" }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "OK" },
+          "400": { "description": "Bad Request" },
+          "404": { "description": "Not Found" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     },
     "/courses/": {
       "get": {
-        "description": "",
+        "tags": ["Courses"],
+        "summary": "Get all courses",
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "OK" },
+          "500": { "description": "Internal Server Error" }
         }
       },
       "post": {
-        "description": "",
-        "responses": {
-          "201": {
-            "description": "Created"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
+        "tags": ["Courses"],
+        "summary": "Create a new course",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "courseCode":      { "type": "string", "example": "MTH301" },
+                "courseName":      { "type": "string", "example": "Further Mathematics" },
+                "courseShortName": { "type": "string", "example": "FURTHMATHS" },
+                "department":      { "type": "string", "example": "Sciences" },
+                "subjectCategory": { "type": "string", "example": "WAEC" },
+                "gradeLevel":      { "type": "string", "example": "SS3" },
+                "term":            { "type": "string", "example": "Full Year" },
+                "teacherName":     { "type": "string", "example": "Mr. Adewale Ogundimu" },
+                "teacherEmail":    { "type": "string", "example": "a.ogundimu@gabbytech.edu.ng" },
+                "hoursPerWeek":    { "type": "number", "example": 5 },
+                "maxEnrollment":   { "type": "number", "example": 40 },
+                "creditUnits":     { "type": "number", "example": 4 },
+                "passMark":        { "type": "number", "example": 40 },
+                "isWAECSubject":   { "type": "boolean", "example": true },
+                "isActive":        { "type": "boolean", "example": true },
+                "description":     { "type": "string", "example": "Advanced mathematics for SS3 science students preparing for WAEC." },
+                "syllabusSummary": { "type": "string", "example": "Term 1: Calculus. Term 2: Vectors. Term 3: Statistics." },
+                "textbooks":       { "type": "array", "items": { "type": "string" }, "example": ["New Further Mathematics by Tuttuh Adegun"] }
+              }
+            }
           }
+        ],
+        "responses": {
+          "201": { "description": "Created" },
+          "400": { "description": "Bad Request" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     },
     "/courses/{id}": {
       "get": {
-        "description": "",
+        "tags": ["Courses"],
+        "summary": "Get a single course by ID",
         "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
+          { "name": "id", "in": "path", "required": true, "type": "string", "description": "MongoDB ObjectId" }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "OK" },
+          "400": { "description": "Bad Request" },
+          "404": { "description": "Not Found" },
+          "500": { "description": "Internal Server Error" }
         }
       },
       "put": {
-        "description": "",
+        "tags": ["Courses"],
+        "summary": "Update a course",
         "parameters": [
+          { "name": "id", "in": "path", "required": true, "type": "string", "description": "MongoDB ObjectId" },
           {
-            "name": "id",
-            "in": "path",
+            "name": "body",
+            "in": "body",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "object",
+              "properties": {
+                "teacherName":  { "type": "string",  "example": "Dr. Emeka Eze" },
+                "hoursPerWeek": { "type": "number",  "example": 6 },
+                "isActive":     { "type": "boolean", "example": true },
+                "description":  { "type": "string",  "example": "Updated course description." }
+              }
+            }
           }
         ],
         "responses": {
-          "204": {
-            "description": "No Content"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "204": { "description": "No Content" },
+          "400": { "description": "Bad Request" },
+          "404": { "description": "Not Found" },
+          "500": { "description": "Internal Server Error" }
         }
       },
       "delete": {
-        "description": "",
+        "tags": ["Courses"],
+        "summary": "Delete a course",
         "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
+          { "name": "id", "in": "path", "required": true, "type": "string", "description": "MongoDB ObjectId" }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/": {
-      "get": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      },
-      "post": {
-        "description": "",
-        "responses": {
-          "201": {
-            "description": "Created"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/grade/{grade}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "grade",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/{id}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      },
-      "put": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "No Content"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      },
-      "delete": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "OK" },
+          "400": { "description": "Bad Request" },
+          "404": { "description": "Not Found" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     }
