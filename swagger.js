@@ -17,7 +17,7 @@ const doc = {
       email: 'gabbytech@example.com'
     }
   },
-  host: 'https://gabbytech-academy-api.onrender.com',       
+  host: 'gabbytech-academy-api.onrender.com',       
   schemes: ['https'],            
   tags: [
     { name: 'Dashboard', description: 'School summary statistics' },

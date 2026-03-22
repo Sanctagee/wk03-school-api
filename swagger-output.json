@@ -9,7 +9,7 @@
       "email": "gabbytech@example.com"
     }
   },
-  "host": "https://gabbytech-academy-api.onrender.com",
+  "host": "gabbytech-academy-api.onrender.com",
   "basePath": "/",
   "tags": [
     {
