@@ -17,8 +17,8 @@ const doc = {
       email: 'gabbytech@example.com'
     }
   },
-  host: 'localhost:8000',       // ← CHANGE to your Render URL after deploying e.g. your-app.onrender.com
-  schemes: ['http'],            // ← CHANGE to ['https'] after deploying to Render
+  host: 'https://gabbytech-academy-api.onrender.com',       
+  schemes: ['https'],            
   tags: [
     { name: 'Dashboard', description: 'School summary statistics' },
     { name: 'Students', description: 'Student registration and management' },

@@ -9,7 +9,7 @@
       "email": "gabbytech@example.com"
     }
   },
-  "host": "localhost:8000",
+  "host": "https://gabbytech-academy-api.onrender.com",
   "basePath": "/",
   "tags": [
     {
@@ -26,7 +26,7 @@
     }
   ],
   "schemes": [
-    "http"
+    "https"
   ],
   "paths": {
     "/dashboard": {
