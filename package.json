@@ -1,8 +1,8 @@
 {
   "name": "wk03-school-api",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "2.0.0",
+  "description": "GabbyTech Academy School Management API with OAuth",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
@@ -10,14 +10,19 @@
     "swagger-autogen": "node swagger.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "GabbyTech",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "connect-mongo": "^5.1.0",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
-    "express": "^5.2.1",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1",
     "mongoose": "^9.3.1",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
     "swagger-autogen": "^2.23.7",
     "swagger-ui-express": "^5.0.1"
   },
