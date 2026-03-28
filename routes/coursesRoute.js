@@ -1,6 +1,8 @@
+// routes/coursesRoute.js
 const express = require('express');
 const router = express.Router();
 const coursesController = require('../controllers/coursesController');
+const isAuthenticated = require('../middleware/isAuthenticated');
 
 /**
  * @swagger
@@ -45,8 +47,13 @@ router.get('/:id', coursesController.getSingle);
  * @swagger
  * /courses:
  *   post:
- *     summary: Create a new course
+ *     summary: Create a new course (🔒 Requires login)
  *     tags: [Courses]
+ *     security:
+ *       - OAuth2: []
+ *     description: >
+ *       **Protected route.** You must be logged in via Google OAuth.
+ *       Log in at [/auth/google](/auth/google) first, then return here to test.
  *     requestBody:
  *       required: true
  *       content:
@@ -131,17 +138,24 @@ router.get('/:id', coursesController.getSingle);
  *         description: Course created successfully
  *       400:
  *         description: Validation failed or duplicate course code
+ *       401:
+ *         description: Unauthorized - login required
  *       500:
  *         description: Internal server error
  */
-router.post('/', coursesController.createCourse);
+router.post('/', isAuthenticated, coursesController.createCourse);
 
 /**
  * @swagger
  * /courses/{id}:
  *   put:
- *     summary: Update an existing course
+ *     summary: Update an existing course (🔒 Requires login)
  *     tags: [Courses]
+ *     security:
+ *       - OAuth2: []
+ *     description: >
+ *       **Protected route.** You must be logged in via Google OAuth.
+ *       Log in at [/auth/google](/auth/google) first, then return here to test.
  *     parameters:
  *       - in: path
  *         name: id
@@ -173,19 +187,26 @@ router.post('/', coursesController.createCourse);
  *         description: Course updated successfully
  *       400:
  *         description: Invalid ID format or validation failed
+ *       401:
+ *         description: Unauthorized - login required
  *       404:
  *         description: Course not found
  *       500:
  *         description: Internal server error
  */
-router.put('/:id', coursesController.updateCourse);
+router.put('/:id', isAuthenticated, coursesController.updateCourse);
 
 /**
  * @swagger
  * /courses/{id}:
  *   delete:
- *     summary: Delete a course
+ *     summary: Delete a course (🔒 Requires login)
  *     tags: [Courses]
+ *     security:
+ *       - OAuth2: []
+ *     description: >
+ *       **Protected route.** You must be logged in via Google OAuth.
+ *       Log in at [/auth/google](/auth/google) first, then return here to test.
  *     parameters:
  *       - in: path
  *         name: id
@@ -198,11 +219,13 @@ router.put('/:id', coursesController.updateCourse);
  *         description: Course deleted successfully
  *       400:
  *         description: Invalid ID format
+ *       401:
+ *         description: Unauthorized - login required
  *       404:
  *         description: Course not found
  *       500:
  *         description: Internal server error
  */
-router.delete('/:id', coursesController.deleteCourse);
+router.delete('/:id', isAuthenticated, coursesController.deleteCourse);
 
 module.exports = router;
