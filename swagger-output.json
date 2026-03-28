@@ -2,104 +2,189 @@
   "swagger": "2.0",
   "info": {
     "title": "GabbyTech Academy — School Management API",
-    "description": "A RESTful API for managing students and courses at GabbyTech Academy (Nigerian Secondary School System: JSS1–SS3). Built with Node.js, Express, and Mongoose as part of CSE 341 Web Services at BYU-Idaho. Developed by GabbyTech.",
-    "version": "1.0.0",
+    "description": "A RESTful API for managing students and courses at GabbyTech Academy (Nigerian Secondary School System: JSS1–SS3).\n\nBuilt with Node.js, Express, Mongoose, and Google OAuth 2.0 as part of CSE 341 Web Services at BYU-Idaho.\n\n## Authentication\nSome routes require authentication. To test protected routes:\n1. Visit **/auth/google** in your browser and log in with Google\n2. Return to Swagger UI and test the protected endpoints\n\nProtected routes are marked with 🔒\n\nDeveloped by GabbyTech.",
+    "version": "2.0.0",
     "contact": {
       "name": "GabbyTech",
-      "email": "gabbytech@example.com"
+      "email": "gabbytech@gmail.com"
     }
   },
-  "host": "gabbytech-academy-api.onrender.com",
+  "host": "localhost:8000",
   "basePath": "/",
+  "schemes": ["http"],
+  "securityDefinitions": {
+    "OAuth2": {
+      "type": "oauth2",
+      "authorizationUrl": "/auth/google",
+      "flow": "implicit",
+      "scopes": {
+        "profile": "Access your Google profile",
+        "email": "Access your Google email"
+      },
+      "description": "Login with Google OAuth 2.0. Visit /auth/google in your browser first, then return here."
+    }
+  },
   "tags": [
+    { "name": "Auth", "description": "Google OAuth login, logout, and user profile" },
     { "name": "Dashboard", "description": "School summary statistics" },
-    { "name": "Students", "description": "Student registration and management" },
-    { "name": "Courses", "description": "Course/subject management" }
+    { "name": "Students", "description": "Student registration and management (write routes require login)" },
+    { "name": "Courses", "description": "Course/subject management (write routes require login)" }
   ],
-  "schemes": ["https"],
   "paths": {
+    "/auth/google": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Initiate Google OAuth login",
+        "description": "Redirects to Google login page. Open this URL directly in your browser to log in.",
+        "responses": {
+          "302": { "description": "Redirect to Google login page" }
+        }
+      }
+    },
+    "/auth/google/callback": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Google OAuth callback URL",
+        "description": "Google redirects here after login. Handled automatically by Passport.",
+        "responses": {
+          "200": { "description": "Authentication successful" },
+          "401": { "description": "Authentication failed" }
+        }
+      }
+    },
+    "/auth/profile": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Get current logged-in user profile",
+        "security": [{ "OAuth2": [] }],
+        "description": "Returns the profile of the currently authenticated user. Log in at /auth/google first.",
+        "responses": {
+          "200": {
+            "description": "Returns authenticated user profile",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": { "type": "string", "example": "Authenticated" },
+                "user": {
+                  "type": "object",
+                  "properties": {
+                    "id": { "type": "string" },
+                    "displayName": { "type": "string" },
+                    "email": { "type": "string" },
+                    "profilePhoto": { "type": "string" },
+                    "role": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Not authenticated" }
+        }
+      }
+    },
+    "/auth/logout": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Log out the current user",
+        "security": [{ "OAuth2": [] }],
+        "description": "Destroys the user session and logs them out.",
+        "responses": {
+          "200": { "description": "Logged out successfully" },
+          "500": { "description": "Logout error" }
+        }
+      }
+    },
     "/dashboard": {
       "get": {
         "tags": ["Dashboard"],
         "summary": "Get school dashboard summary",
         "description": "Returns total students, courses, breakdowns by grade and department, and recent records.",
         "responses": {
-          "200": { "description": "OK" },
-          "500": { "description": "Internal Server Error" }
+          "200": { "description": "Dashboard summary returned successfully" },
+          "500": { "description": "Internal server error" }
         }
       }
     },
-    "/students/": {
+    "/students": {
       "get": {
         "tags": ["Students"],
         "summary": "Get all students",
         "responses": {
-          "200": { "description": "OK" },
-          "500": { "description": "Internal Server Error" }
+          "200": { "description": "A list of all registered students" },
+          "500": { "description": "Internal server error" }
         }
       },
       "post": {
         "tags": ["Students"],
-        "summary": "Register a new student",
+        "summary": "Register a new student (🔒 Requires login)",
+        "security": [{ "OAuth2": [] }],
+        "description": "**Protected route.** Log in at /auth/google first, then return here to test.",
         "parameters": [
           {
-            "name": "body",
             "in": "body",
+            "name": "body",
             "required": true,
             "schema": {
               "type": "object",
+              "required": ["firstName","lastName","gender","dateOfBirth","nationality","stateOfOrigin","studentId","grade","arm","email","address","emergencyContact","medical"],
               "properties": {
-                "firstName":     { "type": "string",  "example": "Chukwuemeka" },
-                "lastName":      { "type": "string",  "example": "Okafor" },
-                "middleName":    { "type": "string",  "example": "David" },
-                "gender":        { "type": "string",  "example": "Male" },
-                "dateOfBirth":   { "type": "string",  "example": "2008-03-14" },
-                "nationality":   { "type": "string",  "example": "Nigerian" },
-                "stateOfOrigin": { "type": "string",  "example": "Anambra" },
-                "religion":      { "type": "string",  "example": "Christianity" },
-                "studentId":     { "type": "string",  "example": "GTA-2024-0001" },
-                "grade":         { "type": "string",  "example": "SS2" },
-                "arm":           { "type": "string",  "example": "A" },
-                "status":        { "type": "string",  "example": "Active" },
-                "cumulativeGPA": { "type": "number",  "example": 4.2 },
-                "waecSubjects":  { "type": "array", "items": { "type": "string" }, "example": ["Mathematics", "English Language", "Physics"] },
-                "email":         { "type": "string",  "example": "emeka.okafor@gabbytech.edu.ng" },
-                "phoneNumber":   { "type": "string",  "example": "+2348012345678" },
+                "firstName": { "type": "string", "example": "Chukwuemeka" },
+                "lastName": { "type": "string", "example": "Okafor" },
+                "middleName": { "type": "string", "example": "David" },
+                "gender": { "type": "string", "enum": ["Male","Female"], "example": "Male" },
+                "dateOfBirth": { "type": "string", "example": "2008-03-14" },
+                "nationality": { "type": "string", "example": "Nigerian" },
+                "stateOfOrigin": { "type": "string", "example": "Anambra" },
+                "religion": { "type": "string", "enum": ["Christianity","Islam","Traditional","Other","Not specified"], "example": "Christianity" },
+                "studentId": { "type": "string", "example": "GTA-2024-0010" },
+                "grade": { "type": "string", "enum": ["JSS1","JSS2","JSS3","SS1","SS2","SS3"], "example": "SS2" },
+                "arm": { "type": "string", "enum": ["A","B","C","D","E"], "example": "A" },
+                "enrollmentDate": { "type": "string", "example": "2022-09-05" },
+                "status": { "type": "string", "enum": ["Active","Graduated","Suspended","Withdrawn","Transferred"], "example": "Active" },
+                "cumulativeGPA": { "type": "number", "example": 4.2 },
+                "waecSubjects": { "type": "array", "items": { "type": "string" }, "example": ["Mathematics","English Language","Physics"] },
+                "email": { "type": "string", "example": "emeka.okafor@gabbytech.edu.ng" },
+                "phoneNumber": { "type": "string", "example": "+2348012345678" },
                 "address": {
                   "type": "object",
-                  "example": {
-                    "street": "12 Adeola Odeku Street",
-                    "city": "Lagos",
-                    "state": "Lagos"
+                  "required": ["street","city","state"],
+                  "properties": {
+                    "street": { "type": "string", "example": "12 Adeola Odeku Street" },
+                    "city": { "type": "string", "example": "Lagos" },
+                    "state": { "type": "string", "example": "Lagos" }
                   }
                 },
                 "emergencyContact": {
                   "type": "object",
-                  "example": {
-                    "fullName": "Ngozi Okafor",
-                    "relationship": "Mother",
-                    "phoneNumber": "+2348098765432",
-                    "email": "ngozi.okafor@gmail.com"
+                  "required": ["fullName","relationship","phoneNumber"],
+                  "properties": {
+                    "fullName": { "type": "string", "example": "Ngozi Okafor" },
+                    "relationship": { "type": "string", "enum": ["Father","Mother","Guardian","Uncle","Aunt","Sibling","Other"], "example": "Mother" },
+                    "phoneNumber": { "type": "string", "example": "+2348098765432" },
+                    "email": { "type": "string", "example": "ngozi.okafor@gmail.com" }
                   }
                 },
                 "medical": {
                   "type": "object",
-                  "example": {
-                    "bloodGroup": "O+",
-                    "genotype": "AS",
-                    "allergies": ["Penicillin"],
-                    "disabilities": "None",
-                    "medicalNotes": "Mild asthma"
+                  "required": ["bloodGroup","genotype"],
+                  "properties": {
+                    "bloodGroup": { "type": "string", "enum": ["A+","A-","B+","B-","AB+","AB-","O+","O-"], "example": "O+" },
+                    "genotype": { "type": "string", "enum": ["AA","AS","AC","SS","SC","CC"], "example": "AS" },
+                    "allergies": { "type": "array", "items": { "type": "string" }, "example": ["Penicillin"] },
+                    "disabilities": { "type": "string", "example": "None" },
+                    "medicalNotes": { "type": "string", "example": "Mild asthma" }
                   }
-                }
+                },
+                "profilePhotoUrl": { "type": "string", "example": "https://example.com/photos/emeka.jpg" }
               }
             }
           }
         ],
         "responses": {
-          "201": { "description": "Created" },
-          "400": { "description": "Bad Request" },
-          "500": { "description": "Internal Server Error" }
+          "201": { "description": "Student registered successfully" },
+          "400": { "description": "Validation failed or duplicate student ID/email" },
+          "401": { "description": "Unauthorized - login required" },
+          "500": { "description": "Internal server error" }
         }
       }
     },
@@ -109,18 +194,18 @@
         "summary": "Get students by grade",
         "parameters": [
           {
-            "name": "grade",
             "in": "path",
+            "name": "grade",
             "required": true,
             "type": "string",
-            "enum": ["JSS1", "JSS2", "JSS3", "SS1", "SS2", "SS3"],
-            "description": "Class grade to filter by"
+            "enum": ["JSS1","JSS2","JSS3","SS1","SS2","SS3"],
+            "description": "The class grade to filter by"
           }
         ],
         "responses": {
-          "200": { "description": "OK" },
-          "400": { "description": "Bad Request" },
-          "500": { "description": "Internal Server Error" }
+          "200": { "description": "Students in the specified grade" },
+          "400": { "description": "Invalid grade value" },
+          "500": { "description": "Internal server error" }
         }
       }
     },
@@ -129,102 +214,114 @@
         "tags": ["Students"],
         "summary": "Get a single student by ID",
         "parameters": [
-          { "name": "id", "in": "path", "required": true, "type": "string", "description": "MongoDB ObjectId" }
+          { "in": "path", "name": "id", "required": true, "type": "string", "description": "The MongoDB student ID" }
         ],
         "responses": {
-          "200": { "description": "OK" },
-          "400": { "description": "Bad Request" },
-          "404": { "description": "Not Found" },
-          "500": { "description": "Internal Server Error" }
+          "200": { "description": "A single student record" },
+          "400": { "description": "Invalid ID format" },
+          "404": { "description": "Student not found" },
+          "500": { "description": "Internal server error" }
         }
       },
       "put": {
         "tags": ["Students"],
-        "summary": "Update a student record",
+        "summary": "Update an existing student record (🔒 Requires login)",
+        "security": [{ "OAuth2": [] }],
+        "description": "**Protected route.** Log in at /auth/google first, then return here to test.",
         "parameters": [
-          { "name": "id", "in": "path", "required": true, "type": "string", "description": "MongoDB ObjectId" },
+          { "in": "path", "name": "id", "required": true, "type": "string", "description": "The MongoDB student ID" },
           {
-            "name": "body",
             "in": "body",
+            "name": "body",
             "required": true,
             "schema": {
               "type": "object",
               "properties": {
-                "grade":         { "type": "string", "example": "SS3" },
-                "arm":           { "type": "string", "example": "B" },
-                "status":        { "type": "string", "example": "Active" },
-                "cumulativeGPA": { "type": "number", "example": 4.5 }
+                "grade": { "type": "string", "enum": ["JSS1","JSS2","JSS3","SS1","SS2","SS3"], "example": "SS3" },
+                "status": { "type": "string", "enum": ["Active","Graduated","Suspended","Withdrawn","Transferred"], "example": "Active" },
+                "cumulativeGPA": { "type": "number", "example": 4.5 },
+                "arm": { "type": "string", "enum": ["A","B","C","D","E"], "example": "B" },
+                "phoneNumber": { "type": "string", "example": "+2348012345678" },
+                "profilePhotoUrl": { "type": "string", "example": "https://example.com/photos/updated.jpg" }
               }
             }
           }
         ],
         "responses": {
-          "204": { "description": "No Content" },
-          "400": { "description": "Bad Request" },
-          "404": { "description": "Not Found" },
-          "500": { "description": "Internal Server Error" }
+          "204": { "description": "Student updated successfully" },
+          "400": { "description": "Invalid ID format or validation failed" },
+          "401": { "description": "Unauthorized - login required" },
+          "404": { "description": "Student not found" },
+          "500": { "description": "Internal server error" }
         }
       },
       "delete": {
         "tags": ["Students"],
-        "summary": "Delete a student record",
+        "summary": "Delete a student record (🔒 Requires login)",
+        "security": [{ "OAuth2": [] }],
+        "description": "**Protected route.** Log in at /auth/google first, then return here to test.",
         "parameters": [
-          { "name": "id", "in": "path", "required": true, "type": "string", "description": "MongoDB ObjectId" }
+          { "in": "path", "name": "id", "required": true, "type": "string", "description": "The MongoDB student ID" }
         ],
         "responses": {
-          "200": { "description": "OK" },
-          "400": { "description": "Bad Request" },
-          "404": { "description": "Not Found" },
-          "500": { "description": "Internal Server Error" }
+          "200": { "description": "Student deleted successfully" },
+          "400": { "description": "Invalid ID format" },
+          "401": { "description": "Unauthorized - login required" },
+          "404": { "description": "Student not found" },
+          "500": { "description": "Internal server error" }
         }
       }
     },
-    "/courses/": {
+    "/courses": {
       "get": {
         "tags": ["Courses"],
         "summary": "Get all courses",
         "responses": {
-          "200": { "description": "OK" },
-          "500": { "description": "Internal Server Error" }
+          "200": { "description": "A list of all courses" },
+          "500": { "description": "Internal server error" }
         }
       },
       "post": {
         "tags": ["Courses"],
-        "summary": "Create a new course",
+        "summary": "Create a new course (🔒 Requires login)",
+        "security": [{ "OAuth2": [] }],
+        "description": "**Protected route.** Log in at /auth/google first, then return here to test.",
         "parameters": [
           {
-            "name": "body",
             "in": "body",
+            "name": "body",
             "required": true,
             "schema": {
               "type": "object",
+              "required": ["courseCode","courseName","department","subjectCategory","gradeLevel","term","teacherName","hoursPerWeek","maxEnrollment","creditUnits","description"],
               "properties": {
-                "courseCode":      { "type": "string", "example": "MTH301" },
-                "courseName":      { "type": "string", "example": "Further Mathematics" },
+                "courseCode": { "type": "string", "example": "MTH301" },
+                "courseName": { "type": "string", "example": "Further Mathematics" },
                 "courseShortName": { "type": "string", "example": "FURTHMATHS" },
-                "department":      { "type": "string", "example": "Sciences" },
-                "subjectCategory": { "type": "string", "example": "WAEC" },
-                "gradeLevel":      { "type": "string", "example": "SS3" },
-                "term":            { "type": "string", "example": "Full Year" },
-                "teacherName":     { "type": "string", "example": "Mr. Adewale Ogundimu" },
-                "teacherEmail":    { "type": "string", "example": "a.ogundimu@gabbytech.edu.ng" },
-                "hoursPerWeek":    { "type": "number", "example": 5 },
-                "maxEnrollment":   { "type": "number", "example": 40 },
-                "creditUnits":     { "type": "number", "example": 4 },
-                "passMark":        { "type": "number", "example": 40 },
-                "isWAECSubject":   { "type": "boolean", "example": true },
-                "isActive":        { "type": "boolean", "example": true },
-                "description":     { "type": "string", "example": "Advanced mathematics for SS3 science students preparing for WAEC." },
-                "syllabusSummary": { "type": "string", "example": "Term 1: Calculus. Term 2: Vectors. Term 3: Statistics." },
-                "textbooks":       { "type": "array", "items": { "type": "string" }, "example": ["New Further Mathematics by Tuttuh Adegun"] }
+                "department": { "type": "string", "enum": ["Sciences","Arts","Commerce","Technical","Social Sciences","Languages","General Studies"], "example": "Sciences" },
+                "subjectCategory": { "type": "string", "enum": ["Core","Elective","Compulsory","WAEC","NECO","Extra-Curricular"], "example": "WAEC" },
+                "gradeLevel": { "type": "string", "enum": ["JSS1","JSS2","JSS3","SS1","SS2","SS3","Junior (JSS1-3)","Senior (SS1-3)","All"], "example": "SS3" },
+                "term": { "type": "string", "enum": ["First Term","Second Term","Third Term","Full Year"], "example": "Full Year" },
+                "teacherName": { "type": "string", "example": "Mr. Adewale Ogundimu" },
+                "teacherEmail": { "type": "string", "example": "a.ogundimu@gabbytech.edu.ng" },
+                "hoursPerWeek": { "type": "number", "example": 5 },
+                "maxEnrollment": { "type": "number", "example": 40 },
+                "creditUnits": { "type": "number", "example": 4 },
+                "passMark": { "type": "number", "example": 40 },
+                "isWAECSubject": { "type": "boolean", "example": true },
+                "isActive": { "type": "boolean", "example": true },
+                "description": { "type": "string", "example": "Advanced mathematics for SS3 science students preparing for WAEC." },
+                "syllabusSummary": { "type": "string", "example": "Term 1 Calculus. Term 2 Vectors. Term 3 Statistics." },
+                "textbooks": { "type": "array", "items": { "type": "string" }, "example": ["New Further Mathematics by Tuttuh Adegun"] }
               }
             }
           }
         ],
         "responses": {
-          "201": { "description": "Created" },
-          "400": { "description": "Bad Request" },
-          "500": { "description": "Internal Server Error" }
+          "201": { "description": "Course created successfully" },
+          "400": { "description": "Validation failed or duplicate course code" },
+          "401": { "description": "Unauthorized - login required" },
+          "500": { "description": "Internal server error" }
         }
       }
     },
@@ -233,53 +330,62 @@
         "tags": ["Courses"],
         "summary": "Get a single course by ID",
         "parameters": [
-          { "name": "id", "in": "path", "required": true, "type": "string", "description": "MongoDB ObjectId" }
+          { "in": "path", "name": "id", "required": true, "type": "string", "description": "The MongoDB course ID" }
         ],
         "responses": {
-          "200": { "description": "OK" },
-          "400": { "description": "Bad Request" },
-          "404": { "description": "Not Found" },
-          "500": { "description": "Internal Server Error" }
+          "200": { "description": "A single course record" },
+          "400": { "description": "Invalid ID format" },
+          "404": { "description": "Course not found" },
+          "500": { "description": "Internal server error" }
         }
       },
       "put": {
         "tags": ["Courses"],
-        "summary": "Update a course",
+        "summary": "Update an existing course (🔒 Requires login)",
+        "security": [{ "OAuth2": [] }],
+        "description": "**Protected route.** Log in at /auth/google first, then return here to test.",
         "parameters": [
-          { "name": "id", "in": "path", "required": true, "type": "string", "description": "MongoDB ObjectId" },
+          { "in": "path", "name": "id", "required": true, "type": "string", "description": "The MongoDB course ID" },
           {
-            "name": "body",
             "in": "body",
+            "name": "body",
             "required": true,
             "schema": {
               "type": "object",
               "properties": {
-                "teacherName":  { "type": "string",  "example": "Dr. Emeka Eze" },
-                "hoursPerWeek": { "type": "number",  "example": 6 },
-                "isActive":     { "type": "boolean", "example": true },
-                "description":  { "type": "string",  "example": "Updated course description." }
+                "teacherName": { "type": "string", "example": "Dr. Emeka Eze" },
+                "teacherEmail": { "type": "string", "example": "e.eze@gabbytech.edu.ng" },
+                "hoursPerWeek": { "type": "number", "example": 6 },
+                "isActive": { "type": "boolean", "example": true },
+                "description": { "type": "string", "example": "Updated course description." },
+                "passMark": { "type": "number", "example": 45 },
+                "maxEnrollment": { "type": "number", "example": 45 }
               }
             }
           }
         ],
         "responses": {
-          "204": { "description": "No Content" },
-          "400": { "description": "Bad Request" },
-          "404": { "description": "Not Found" },
-          "500": { "description": "Internal Server Error" }
+          "204": { "description": "Course updated successfully" },
+          "400": { "description": "Invalid ID format or validation failed" },
+          "401": { "description": "Unauthorized - login required" },
+          "404": { "description": "Course not found" },
+          "500": { "description": "Internal server error" }
         }
       },
       "delete": {
         "tags": ["Courses"],
-        "summary": "Delete a course",
+        "summary": "Delete a course (🔒 Requires login)",
+        "security": [{ "OAuth2": [] }],
+        "description": "**Protected route.** Log in at /auth/google first, then return here to test.",
         "parameters": [
-          { "name": "id", "in": "path", "required": true, "type": "string", "description": "MongoDB ObjectId" }
+          { "in": "path", "name": "id", "required": true, "type": "string", "description": "The MongoDB course ID" }
         ],
         "responses": {
-          "200": { "description": "OK" },
-          "400": { "description": "Bad Request" },
-          "404": { "description": "Not Found" },
-          "500": { "description": "Internal Server Error" }
+          "200": { "description": "Course deleted successfully" },
+          "400": { "description": "Invalid ID format" },
+          "401": { "description": "Unauthorized - login required" },
+          "404": { "description": "Course not found" },
+          "500": { "description": "Internal server error" }
         }
       }
     }
