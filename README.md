@@ -118,7 +118,7 @@ wk03-school-api/
 Create a `.env` file in the root of your project with the following:
 
 ```env
-MONGO_URL=mongodb+srv://tonygabito:myPassword@cluster0.xxxxx.mongodb.net/gabbytech_academy
+MONGO_URL=mymongodbconnectionstrings
 SESSION_SECRET=some_long_random_string_here
 GOOGLE_CLIENT_ID=your_google_client_id.apps.googleusercontent.com
 GOOGLE_CLIENT_SECRET=your_google_client_secret
