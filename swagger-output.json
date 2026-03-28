@@ -9,9 +9,9 @@
       "email": "gabbytech@gmail.com"
     }
   },
-  "host": "localhost:8000",
+  "host": "gabbytech-academy-api.onrender.com",
   "basePath": "/",
-  "schemes": ["http"],
+  "schemes": ["https"],
   "securityDefinitions": {
     "OAuth2": {
       "type": "oauth2",
