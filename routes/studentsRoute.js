@@ -1,6 +1,8 @@
+// routes/studentsRoute.js
 const express = require('express');
 const router = express.Router();
 const studentsController = require('../controllers/studentsController');
+const isAuthenticated = require('../middleware/isAuthenticated');
 
 /**
  * @swagger
@@ -69,8 +71,13 @@ router.get('/:id', studentsController.getSingle);
  * @swagger
  * /students:
  *   post:
- *     summary: Register a new student
+ *     summary: Register a new student (🔒 Requires login)
  *     tags: [Students]
+ *     security:
+ *       - OAuth2: []
+ *     description: >
+ *       **Protected route.** You must be logged in via Google OAuth to use this endpoint.
+ *       Log in at [/auth/google](/auth/google) first, then return here to test.
  *     requestBody:
  *       required: true
  *       content:
@@ -208,17 +215,24 @@ router.get('/:id', studentsController.getSingle);
  *         description: Student registered successfully
  *       400:
  *         description: Validation failed or duplicate student ID/email
+ *       401:
+ *         description: Unauthorized - login required
  *       500:
  *         description: Internal server error
  */
-router.post('/', studentsController.createStudent);
+router.post('/', isAuthenticated, studentsController.createStudent);
 
 /**
  * @swagger
  * /students/{id}:
  *   put:
- *     summary: Update an existing student record
+ *     summary: Update an existing student record (🔒 Requires login)
  *     tags: [Students]
+ *     security:
+ *       - OAuth2: []
+ *     description: >
+ *       **Protected route.** You must be logged in via Google OAuth.
+ *       Log in at [/auth/google](/auth/google) first, then return here to test.
  *     parameters:
  *       - in: path
  *         name: id
@@ -253,19 +267,26 @@ router.post('/', studentsController.createStudent);
  *         description: Student updated successfully
  *       400:
  *         description: Invalid ID format or validation failed
+ *       401:
+ *         description: Unauthorized - login required
  *       404:
  *         description: Student not found
  *       500:
  *         description: Internal server error
  */
-router.put('/:id', studentsController.updateStudent);
+router.put('/:id', isAuthenticated, studentsController.updateStudent);
 
 /**
  * @swagger
  * /students/{id}:
  *   delete:
- *     summary: Delete a student record
+ *     summary: Delete a student record (🔒 Requires login)
  *     tags: [Students]
+ *     security:
+ *       - OAuth2: []
+ *     description: >
+ *       **Protected route.** You must be logged in via Google OAuth.
+ *       Log in at [/auth/google](/auth/google) first, then return here to test.
  *     parameters:
  *       - in: path
  *         name: id
@@ -278,11 +299,13 @@ router.put('/:id', studentsController.updateStudent);
  *         description: Student deleted successfully
  *       400:
  *         description: Invalid ID format
+ *       401:
+ *         description: Unauthorized - login required
  *       404:
  *         description: Student not found
  *       500:
  *         description: Internal server error
  */
-router.delete('/:id', studentsController.deleteStudent);
+router.delete('/:id', isAuthenticated, studentsController.deleteStudent);
 
 module.exports = router;
